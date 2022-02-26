@@ -60,7 +60,7 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
       
-  // Add an assignment to a student
+  // Add a friend to user array
   addFriend(req, res) {
     console.log('params:', req.params);
     User.findOneAndUpdate(
@@ -77,20 +77,16 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Remove assignment from a student
-  removeAssignment(req, res) {
-    Student.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
-      { runValidators: true, new: true }
-    )
-      .then((student) =>
-        !student
-          ? res
-              .status(404)
-              .json({ message: 'No student found with that ID :(' })
-          : res.json(student)
-      )
-      .catch((err) => res.status(500).json(err));
-  },
-};
+  // Remove friend from user array
+  removeFriend(req, res) {
+    User.findOneAndUpdate({_id: req.params.userId}, 
+      {$pull: 
+      {friends: req.params.friendId}},
+      {new: true})
+    .then((user) => 
+    !user
+        ? res.status(404).json({message: "No friend with this ID!"})
+        : res.json(user)
+    ).catch((err) => res.status(500).json(err));
+}
+}
